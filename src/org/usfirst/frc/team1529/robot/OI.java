@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
  */
 public class OI {
 	//// CREATING BUTTONS
-	// One type of button is a joystick button which is any button on a
+	// One type of button is a joystick button which is an	y button on a
 	//// joystick.
 	// You create one by telling it which joystick it's on and which button
 	// number it is.
@@ -32,13 +32,32 @@ public class OI {
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to
 	// commands the same as any other Button.
-	public Joystick driverStick = new Joystick(0);
-	Button driverStickButton9 = new JoystickButton(driverStick, 9);
-	Button driverStickButton1 = new JoystickButton(driverStick, 1);
-	Button driverStickButton2 = new JoystickButton(driverStick, 2);
-	public Joystick otherStick = new Joystick(0);
-	Button otherStickButton10 = new JoystickButton(otherStick, 10);
-
+	public Joystick leftStick = new Joystick(0);
+	public Joystick rightStick = new Joystick(1);
+	public Joystick Operator = new Joystick(2);
+	public Button rJoystickDown = new JoystickButton(Operator, 1);
+	public Button rJoystickUp = new JoystickButton(Operator, 2);
+	public Button lJoystickDown = new JoystickButton(Operator, 3);
+	public Button lJoystickUp = new JoystickButton(Operator, 4);
+	public Button intakeOut = new JoystickButton(Operator, 5);
+	public Button intakeIn = new JoystickButton(Operator, 6);
+	public Button handClose = new JoystickButton(Operator, 7);
+	public Button handOpen = new JoystickButton(Operator, 8);
+	public Button scaleUp = new JoystickButton(Operator, 19);
+	public Button scaleDown = new JoystickButton(Operator,20);
+	public Button Switch = new JoystickButton(Operator, 11);
+	public Button SPEED = new JoystickButton(Operator, 15);
+	public Button handLimp = new JoystickButton(Operator, 13);
+	public Button Vault = new JoystickButton(Operator, 14);
+	//public Joystick otherStick = new Joystick(0);
+	//Button otherStickButton10 = new JoystickButton(otherStick, 10);
+	
+	/*public Joystick operatorL = new Joystick(5);
+	Button rJoystickDown = new JoystickButton(operatorL, 4);
+	Button rJoystickUp = new JoystickButton(operatorL, 5);
+	Button lJoystickDown = new JoystickButton(operatorL, 6);
+	Button lJoystickUp = new JoystickButton(operatorL, 7);
+	Button topRight = new JoystickButton(operatorL, 8);*/
 //	Joystick rightStick = new Joystick(1);
 //	Button rightStickButton1 = new JoystickButton(rightStick, 1);
 //	
@@ -59,8 +78,12 @@ public class OI {
 	// until it is finished as determined by it's isFinished method.
 	// button.whenReleased(new ExampleCommand());
 	public void initializeButtons(){
-		driverStickButton1.whenPressed(new RaiseClimbCommand());
-		driverStickButton2.whenPressed(new LowerClimbCommand());
+		System.out.println("OPERATING BUTTONS INIT");
+		leftStick = new Joystick(0);
+		rightStick = new Joystick(1);
+		Operator = new Joystick(2);
+
+		
 	}
 	
 }

@@ -21,7 +21,8 @@ public class TeleopDriveCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	Robot.kDriveTrainSubsystem.drive(Robot.m_oi.driverStick);
+//    	kDriveTrainSubsystem.drive(m_oi.driverStick.getRawAxis(1), m_oi.driverStick.getRawAxis(5));
+    	Robot.kDriveTrainSubsystem.drive(Robot.m_oi.leftStick.getRawAxis(1), Robot.m_oi.rightStick.getRawAxis(1));
     }
 
     // Make this return true when this Command no longer needs to run execute()
@@ -31,7 +32,7 @@ public class TeleopDriveCommand extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.kDriveTrainSubsystem.drive(0, 100000);
+    	Robot.kDriveTrainSubsystem.drive(0, 0);
     }
 
     // Called when another command which requires one or more of the same

@@ -9,33 +9,32 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class ArmSubsystem extends Subsystem {
-VictorSPX OuterLift = new VictorSPX(5);
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
-VictorSPX InnerLift = new VictorSPX(6);
-
+public VictorSPX ElevatorMotor = new VictorSPX(11);
+public VictorSPX ClimbMotor = new VictorSPX(17);
+//public VictorSPX SlackMotor = new VictorSPX(10);
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
     }
     
-    public void RaiseOuter(){
-    	OuterLift.set(ControlMode.PercentOutput, 50);
+    public void Raise(double time, double speed){
+    	ElevatorMotor.set(ControlMode.PercentOutput, speed);
+    	ClimbMotor.set(ControlMode.PercentOutput, speed);
+    	//SlackMotor.set(ControlMode.PercentOutput, -speed);
     }
-    public void LowerOuter(){
-    	OuterLift.set(ControlMode.PercentOutput, -50);
+    public void Lower(double time, double speed){
+    	ElevatorMotor.set(ControlMode.PercentOutput, -speed);
+    	ClimbMotor.set(ControlMode.PercentOutput, -speed);
+    	//SlackMotor.set(ControlMode.PercentOutput, speed);
+
     }
-    public void StopOuter(){
-    	OuterLift.set(ControlMode.PercentOutput, 0);
-    }
-    public void RaiseInner(){
-    	InnerLift.set(ControlMode.PercentOutput, 50);
-    }
-    public void LowerInner(){
-    	InnerLift.set(ControlMode.PercentOutput, -50);
-    }
-    public void StopInner(){
-    	InnerLift.set(ControlMode.PercentOutput, 0);
+    public void Stop(){
+    	ElevatorMotor.set(ControlMode.PercentOutput, 0);
+    	ClimbMotor.set(ControlMode.PercentOutput, 0);
+    	//SlackMotor.set(ControlMode.PercentOutput, 0);
+
     }
 }
 

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class ClimbSubsystem extends Subsystem {
-		VictorSPX Climb = new VictorSPX(4);
+		VictorSPX Climb = new VictorSPX(3);
     // Put methods for controlling this subsystem
     // here. Call these from Commands.
 

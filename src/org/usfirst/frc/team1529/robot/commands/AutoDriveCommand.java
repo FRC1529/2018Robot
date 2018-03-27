@@ -22,14 +22,22 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class AutoDriveCommand extends Command {
 
-	boolean isFinished = false;
+	private boolean isFinished;
+	private double speed;
+	private double distance;
+	private int auto_counter;
 	
-	
-	public AutoDriveCommand() {
+	public AutoDriveCommand(double s, double d) {
 		// Use requires() here to declare subsystem dependencies
+		requires(Robot.kHandSubsystem);
 		requires(Robot.kDriveTrainSubsystem);
-		
+		speed = s;
+		distance = d;
+		isFinished = false;
+		requires(Robot.kArmSubsystem);
+
 	}
+	
 
 	// Called just before this Command runs the first time
 	@Override
@@ -41,11 +49,14 @@ public class AutoDriveCommand extends Command {
 	@Override
 	public void execute() {
 		//System.out.println("EXCUTING");
-		Robot.kDriveTrainSubsystem.drive(-.75, -144.0);
-		if (Robot.kDriveTrainSubsystem.enc.getDistance() < -144.0){
-			isFinished = true;
+		Robot.kDriveTrainSubsystem.autoDrive(speed, distance);
+			if(Robot.kDriveTrainSubsystem.enc.getDistance() > distance){
+				isFinished = true;
+			}
+
 		}
-	}
+		
+
 
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
@@ -57,8 +68,9 @@ public class AutoDriveCommand extends Command {
 	@Override
 	protected void end() {
 		Robot.kDriveTrainSubsystem.stop();
-		Timer.delay(1);
+		Timer.delay(0.1);
 		Robot.kDriveTrainSubsystem.enc.reset();
+		
 	}
 
 	// Called when another command which requires one or more of the same

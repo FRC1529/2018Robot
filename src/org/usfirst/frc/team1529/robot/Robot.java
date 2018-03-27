@@ -7,7 +7,11 @@
 
 package org.usfirst.frc.team1529.robot;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.buttons.Button;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -15,15 +19,24 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team1529.robot.subsystems.*;
-import org.usfirst.frc.team1529.robot.commands.AutoCommandGroup;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import org.usfirst.frc.team1529.robot.commands.AutoDefaultCommandGroup;
 import org.usfirst.frc.team1529.robot.commands.AutoDriveCommand;
+import org.usfirst.frc.team1529.robot.commands.AutoLeftCommandGroup;
+import org.usfirst.frc.team1529.robot.commands.AutoMiddleCommandGroup;
+import org.usfirst.frc.team1529.robot.commands.AutoRightCommandGroup;
+import org.usfirst.frc.team1529.robot.commands.LowerClimbCommand;
+import org.usfirst.frc.team1529.robot.commands.RaiseClimbCommand;
 import org.usfirst.frc.team1529.robot.commands.TeleopDriveCommand;
 
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
  * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.properties file in the
+ * creating this project, you6+ must also update the build.properties file in the
  * project.
  */
 public class Robot extends TimedRobot {
@@ -32,8 +45,15 @@ public class Robot extends TimedRobot {
 	public static ClimbSubsystem kClimbSubsystem = new ClimbSubsystem();
 	public static ArmSubsystem kArmSubsystem = new ArmSubsystem();
 	public static HandSubsystem kHandSubsystem = new HandSubsystem();
-	CommandGroup autoCommand = new AutoCommandGroup();
-	TeleopDriveCommand driveCommmand = new TeleopDriveCommand();
+	CommandGroup autoDefaultCommand = new AutoDefaultCommandGroup("default");
+	CommandGroup autoLeftCommand = new AutoLeftCommandGroup();
+	CommandGroup autoMiddleCommand = new AutoMiddleCommandGroup();
+	CommandGroup autoRightCommand = new AutoRightCommandGroup();
+	
+	
+	
+	CommandGroup autoCommand;
+	TeleopDriveCommand TeleOPDriveCommmand = new TeleopDriveCommand();
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -45,11 +65,16 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		m_oi = new OI();
 		m_oi.initializeButtons();
-		m_chooser.addDefault("Default Auto", new AutoDriveCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", m_chooser);
+		m_chooser.addDefault("Default Auto", new AutoDefaultCommandGroup("default"));
+		//m_chooser.addObject("Left Scale", new AutoLeftCommandGroup());
+		//m_chooser.addObject("Big Dog Automatic", new AutoRightCommandGroup());
+		SmartDashboard.putData("Auto mode chooser", m_chooser);
 		kDriveTrainSubsystem.gyro.calibrate();
-		m_autonomousCommand = new AutoDriveCommand();
+		Robot.kDriveTrainSubsystem.enc.reset();
+		System.out.println(m_chooser.getSelected());
+		
+//		Robot.kDriveTrainSubsystem.FrontLeft.setNeutralMode(NeutralMode.Coast);
+//		Robot.kDriveTrainSubsystem.RearLeft.setNeutralMode(NeutralMode.Coast);
 	}
 
 	/**
@@ -61,7 +86,6 @@ public class Robot extends TimedRobot {
 	public void disabledInit() {
 
 	}
-
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
@@ -80,10 +104,12 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		
-		autoCommand = new AutoCommandGroup();
+		autoCommand = (CommandGroup) m_chooser.getSelected();
 		autoCommand.start();
-
+		System.out.println(m_chooser.getSelected());
+		if (false) 
+		{
+		Robot.kDriveTrainSubsystem.enc.reset();
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
 		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -91,7 +117,7 @@ public class Robot extends TimedRobot {
 		 * autonomousCommand = new Auto12ftCommand(); break; }
 		 */
 		// schedule the autonomous command (example)
-	
+		}
 	}
 
 	/**
@@ -100,7 +126,8 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		System.out.println("Enc: " + kDriveTrainSubsystem.enc.getDistance() + " & Gyro: " + kDriveTrainSubsystem.gyro.getAngle());
+		SmartDashboard.putNumber("Enc ", kDriveTrainSubsystem.enc.getDistance() );
+		System.out.println("Enczymurgy: " + kDriveTrainSubsystem.enc.getDistance() + " & Gyro: " + kDriveTrainSubsystem.gyro.getAngle());
 	}
 
 	@Override
@@ -112,7 +139,7 @@ public class Robot extends TimedRobot {
 		if (autoCommand != null) {
 			autoCommand.cancel();
 		}
-		driveCommmand.start();
+		TeleOPDriveCommmand.start();
 		
 	}
 
@@ -122,14 +149,182 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		if (m_oi.driverStickButton9.get()){
-			kDriveTrainSubsystem.motorFlip = -1;
-		}
-		if (m_oi.driverStick.getRawButton(10)){
-			kDriveTrainSubsystem.motorFlip = 1;
-		}
+		SmartDashboard.putNumber("Encoder", kDriveTrainSubsystem.enc.getDistance());
+		SmartDashboard.putNumber("Climb Encoder", kDriveTrainSubsystem.climbEnc.getDistance());
+		SmartDashboard.putNumber("Front Right Motor Voltage", kDriveTrainSubsystem.FrontRight.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Front Left Motor Voltage", kDriveTrainSubsystem.FrontLeft.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Rear Right Motor Voltage", kDriveTrainSubsystem.RearRight.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Rear Left Motor Voltage", kDriveTrainSubsystem.RearLeft.getMotorOutputVoltage());
+		SmartDashboard.putNumber("Gyro", kDriveTrainSubsystem.gyro.getAngle());
+		//SmartDashboard.putNumber("Climb Speed"	`1, kArmSubsystem.ElevatorMotor.getMotorOutputVoltage());
+		System.out.println("ENC: " + kDriveTrainSubsystem.enc.getDistance());
+		System.out.println(m_oi.Operator.getRawAxis(1));
 		
-	}
+		
+		//drivetrain
+			Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput,-m_oi.leftStick.getRawAxis(1));
+			Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, -m_oi.leftStick.getRawAxis(1));
+			Robot.kDriveTrainSubsystem.FrontRight.set(ControlMode.PercentOutput, m_oi.rightStick.getRawAxis(1));
+			Robot.kDriveTrainSubsystem.RearRight.set(ControlMode.PercentOutput, m_oi.rightStick.getRawAxis(1));
+		
+		
+		
+		//hand rotation
+			if(Robot.m_oi.rJoystickDown.get())
+			{
+				/* this is to lift arms so hooks can engage */
+				Robot.kHandSubsystem.HandRotate.set(ControlMode.PercentOutput, .45);
+				//this.kHandSubsystem.HandRotate.set(controlmode., arg1);
+			}
+			else if(Robot.m_oi.rJoystickUp.get())
+			{
+					/* this is to lower arms into cube pickup/grab position */
+					Robot.kHandSubsystem.HandRotate.set(ControlMode.PercentOutput, -.45);
+			}
+			else
+			{
+				Robot.kHandSubsystem.HandRotate.set(ControlMode.PercentOutput, 0);
+			}
+		
+			
+		//intake wheels	
+			if(m_oi.SPEED.get()){
+				
+				if(m_oi.intakeIn.get()){
+					Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, 1);
+					Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, -1);
+					}
+						else if((m_oi.intakeOut.get())){
+							Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, -1);
+							Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, 1);
+						}
+								else{
+									Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, 0);
+									Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, 0);
+								}
+			}
+				else{
+					
+					if(m_oi.intakeIn.get()){
+						Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, .6);
+						Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, -.6);
+						}
+							else if((m_oi.intakeOut.get())){
+								Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, -.6);
+								Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, .6);
+							}
+									else{
+										Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, 0);
+										Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, 0);
+									}
+				}
+			
+			
+		//intake arms	
+			if(m_oi.handOpen.get()){
+				Robot.kHandSubsystem.Solenoid.set(DoubleSolenoid.Value.kForward);
+				
+			}
+				else if(m_oi.handClose.get()){
+					Robot.kHandSubsystem.Solenoid.set(DoubleSolenoid.Value.kReverse);
+				}
+					else if(m_oi.handLimp.get()){
+						Robot.kHandSubsystem.Solenoid.set(DoubleSolenoid.Value.kOff);
+					}
+
+			
+		//led junk
+			if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() < 5){
+				Robot.kDriveTrainSubsystem.LED.set(.69);
+			}
+				else if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() > 5 && Robot.kDriveTrainSubsystem.climbEnc.getDistance() < 20){
+					Robot.kDriveTrainSubsystem.LED.set(.91);
+				}
+					else if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() > 48 && Robot.kDriveTrainSubsystem.climbEnc.getDistance() < 59){
+						Robot.kDriveTrainSubsystem.LED.set(.77);
+					}
+							else if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() > 60 && Robot.kDriveTrainSubsystem.climbEnc.getDistance() < 72){
+								Robot.kDriveTrainSubsystem.LED.set(.65);
+							}
+									else{
+										Robot.kDriveTrainSubsystem.LED.set(.41);
+									}
+		
+			//climb hotkeys
+				if(Robot.m_oi.Vault.get()){
+					
+					if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() > 1){
+						Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, -1);
+					}
+						else{
+							Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 0);
+						}
+					
+				}
+					else if(Robot.m_oi.Switch.get()){
+						
+						if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() > 19){
+						Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, -1);
+						Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, -1);
+						}
+							else if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() < 19){
+								Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 1);
+								Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 1);
+							}
+								else{
+									Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 0);
+									Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 0);
+								}
+					}
+						
+						else if(Robot.m_oi.scaleDown.get()){
+							
+							if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() > 54){
+								Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, -1);
+								Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 1);
+							}
+								else if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() < 54){
+									Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 1);
+									Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, -1);
+								}
+									else{
+										Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 0);
+										Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 0);
+									}
+						}
+							else if(Robot.m_oi.scaleUp.get()){
+								
+								if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() > 66){
+									Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, -1);
+									Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 1);
+								}
+								else if(Robot.kDriveTrainSubsystem.climbEnc.getDistance() < 66){
+										Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 1);
+										Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, -1);
+									}
+										else{
+											Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 0);
+											Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 0);
+										}
+							}
+								else{
+									
+									if(m_oi.lJoystickUp.get()){
+										Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 1);
+										Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, -1);
+									}
+										else if(m_oi.lJoystickDown.get()){
+											Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, -1);
+											Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 1);
+										}
+											else{
+												Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 0);
+												Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 0);
+											}
+								}
+							
+						}
+	
 
 	/**
 	 * This function is called periodically during test mode.
