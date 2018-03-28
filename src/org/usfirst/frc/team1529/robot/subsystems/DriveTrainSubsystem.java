@@ -33,8 +33,8 @@ public class DriveTrainSubsystem extends Subsystem {
 	
 	
 	public static int ENCODER_OFFSET = 12;
-	public Encoder enc = new Encoder(2,3,false, Encoder.EncodingType.k4X);
-	public Encoder climbEnc = new Encoder(0,1,false, Encoder.EncodingType.k4X);
+	public Encoder enc = new Encoder(0,1,false, Encoder.EncodingType.k4X);
+	public Encoder climbEnc = new Encoder(2,3,false, Encoder.EncodingType.k4X);
 	public ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	//public int motorFlip = -1;
 	

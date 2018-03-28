@@ -8,6 +8,7 @@
 package org.usfirst.frc.team1529.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.Button;
@@ -41,22 +42,33 @@ import org.usfirst.frc.team1529.robot.commands.TeleopDriveCommand;
  */
 public class Robot extends TimedRobot {
 	public static OI m_oi;
+	
+	public static String switchMode = "UNKNOWN";
+	public static String scaleMode = "UNKNOWN";
+	public static String opposingSwitch = "UNKNOWN";
+	public static String startingPosition = "UNKNOWN";
+	public static String selectedAutoMode = "UNKNOWN";
+	
 	public static DriveTrainSubsystem kDriveTrainSubsystem = new DriveTrainSubsystem();
 	public static ClimbSubsystem kClimbSubsystem = new ClimbSubsystem();
 	public static ArmSubsystem kArmSubsystem = new ArmSubsystem();
 	public static HandSubsystem kHandSubsystem = new HandSubsystem();
-	CommandGroup autoDefaultCommand = new AutoDefaultCommandGroup("default");
-	CommandGroup autoLeftCommand = new AutoLeftCommandGroup();
-	CommandGroup autoMiddleCommand = new AutoMiddleCommandGroup();
-	CommandGroup autoRightCommand = new AutoRightCommandGroup();
+	//CommandGroup autoDefaultCommand = new AutoDefaultCommandGroup("default");
+	//CommandGroup autoLeftCommand = new AutoLeftCommandGroup();
+	//CommandGroup autoMiddleCommand = new AutoMiddleCommandGroup();
+	//CommandGroup autoRightCommand = new AutoRightCommandGroup();
 	
 	
 	
 	CommandGroup autoCommand;
 	TeleopDriveCommand TeleOPDriveCommmand = new TeleopDriveCommand();
 	Command m_autonomousCommand;
-	SendableChooser<Command> m_chooser = new SendableChooser<>();
-
+	SendableChooser<String> m_chooser = new SendableChooser<>();
+	
+	SendableChooser<String> positionChooser = new SendableChooser<>();
+	
+	
+	
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
@@ -65,13 +77,18 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		m_oi = new OI();
 		m_oi.initializeButtons();
-		m_chooser.addDefault("Default Auto", new AutoDefaultCommandGroup("default"));
-		//m_chooser.addObject("Left Scale", new AutoLeftCommandGroup());
-		//m_chooser.addObject("Big Dog Automatic", new AutoRightCommandGroup());
+		m_chooser.addDefault("Default Auto", "DEFAULT");
+		m_chooser.addObject("Left Scale", "LEFTSCALE");
+		m_chooser.addObject("Right Scale", "RIGHTSCALE");
 		SmartDashboard.putData("Auto mode chooser", m_chooser);
 		kDriveTrainSubsystem.gyro.calibrate();
 		Robot.kDriveTrainSubsystem.enc.reset();
 		System.out.println(m_chooser.getSelected());
+		
+		positionChooser.addDefault("Left", "LEFT");
+		positionChooser.addObject("Middle", "MIDDLE");
+		positionChooser.addObject("Right", "RIGHT");
+		SmartDashboard.putData("Starting Position", positionChooser);
 		
 //		Robot.kDriveTrainSubsystem.FrontLeft.setNeutralMode(NeutralMode.Coast);
 //		Robot.kDriveTrainSubsystem.RearLeft.setNeutralMode(NeutralMode.Coast);
@@ -104,22 +121,71 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		autoCommand = (CommandGroup) m_chooser.getSelected();
-		autoCommand.start();
-		System.out.println(m_chooser.getSelected());
-		if (false) 
-		{
-		Robot.kDriveTrainSubsystem.enc.reset();
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new Auto12ftCommand(); break; }
-		 */
-		// schedule the autonomous command (example)
+	
+		getGameData();
+		
+		selectedAutoMode = (String) m_chooser.getSelected();
+		System.out.println(selectedAutoMode);
+		startingPosition = (String) positionChooser.getSelected();
+		System.out.println(startingPosition + " " + switchMode);
+		
+		switch (startingPosition){
+			
+		case "LEFT":
+				autoCommand = new AutoLeftCommandGroup(switchMode);
+				break;
+		case "RIGHT":
+				autoCommand = new AutoRightCommandGroup(switchMode);
+				break;
+		case "MIDDLE":
+				autoCommand = new AutoMiddleCommandGroup(switchMode);
+				break;
+			default:
+				autoCommand = new AutoMiddleCommandGroup(switchMode);
+				break;
 		}
+		
+		Robot.kDriveTrainSubsystem.enc.reset();
+		autoCommand.start();
 	}
 
+	public void getGameData(){
+		String gameData;
+    	try
+    	{
+    		gameData = DriverStation.getInstance().getGameSpecificMessage();
+			if (gameData == null){
+				return;
+			}
+			if (!gameData.isEmpty() ) {
+				gameData = gameData.toLowerCase();
+				
+				switchMode = parseGameData(gameData, 0);
+				scaleMode = parseGameData(gameData, 1);
+				opposingSwitch= parseGameData(gameData,2);
+			}
+			
+    		System.out.print(gameData);
+    	}
+    	catch (Exception e)
+    	{
+    		gameData = "ERROR RECIEVING GAME DATA";
+    		System.out.print(gameData);
+    	}
+	}
+	
+	public String parseGameData(String gameData, int index){
+		switch (gameData.charAt(index)){
+			case 'l':
+				return "LEFT";
+			case 'r': 
+				return "RIGHT";
+			default :
+				return "UNKNOWN";
+		}
+	}
+	
+	
 	/**
 	 * This function is called periodically during autonomous.
 	 */
@@ -127,7 +193,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("Enc ", kDriveTrainSubsystem.enc.getDistance() );
-		System.out.println("Enczymurgy: " + kDriveTrainSubsystem.enc.getDistance() + " & Gyro: " + kDriveTrainSubsystem.gyro.getAngle());
+		//System.out.println("Enczymurgy: " + kDriveTrainSubsystem.enc.getDistance() + " & Gyro: " + kDriveTrainSubsystem.gyro.getAngle());
 	}
 
 	@Override

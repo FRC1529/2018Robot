@@ -33,8 +33,8 @@ public class ArmRaiseCommand extends Command {
 
     	
     	Robot.kArmSubsystem.Raise(speed, height);
-    	
-    	if (Robot.kDriveTrainSubsystem.climbEnc.getDistance() == height){
+    	System.out.println(Robot.kDriveTrainSubsystem.climbEnc.getDistance() );
+    	if (Robot.kDriveTrainSubsystem.climbEnc.getDistance() >= height){
 			isFinished = true;
     	}
     }
