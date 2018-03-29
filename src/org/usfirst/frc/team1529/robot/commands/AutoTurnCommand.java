@@ -15,6 +15,7 @@ public class AutoTurnCommand extends Command {
 	private boolean isFinished;
 	private double turnAngle;
 	private String direction;
+	private double speed = .25;
 	
     public AutoTurnCommand(double angle, String D) {
         // Use requires() here to declare subsystem dependencies
@@ -35,21 +36,21 @@ public class AutoTurnCommand extends Command {
     	Robot.kDriveTrainSubsystem.gyro.getAngle();
     	
     	if(direction == "right" ){
-    		Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput, 75);
-    		Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, 75);
+    		Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput, speed);
+    		Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, speed);
     		
-    		Robot.kDriveTrainSubsystem.FrontRight.set(ControlMode.PercentOutput, 75);
-    		Robot.kDriveTrainSubsystem.RearRight.set(ControlMode.PercentOutput, 75);
+    		Robot.kDriveTrainSubsystem.FrontRight.set(ControlMode.PercentOutput, speed);
+    		Robot.kDriveTrainSubsystem.RearRight.set(ControlMode.PercentOutput, speed);
     		if (Robot.kDriveTrainSubsystem.gyro.getAngle() > turnAngle){
     			isFinished = true;
     		}
     	}
     	else if (direction == "left" ){
-    		Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput, -75);
-    		Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, -75);
+    		Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput, -speed);
+    		Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, -speed);
     		
-    		Robot.kDriveTrainSubsystem.FrontRight.set(ControlMode.PercentOutput, -75);
-    		Robot.kDriveTrainSubsystem.RearRight.set(ControlMode.PercentOutput, -75);
+    		Robot.kDriveTrainSubsystem.FrontRight.set(ControlMode.PercentOutput, -speed);
+    		Robot.kDriveTrainSubsystem.RearRight.set(ControlMode.PercentOutput, -speed);
     		if (Robot.kDriveTrainSubsystem.gyro.getAngle() < turnAngle){
     			isFinished = true;
     		}

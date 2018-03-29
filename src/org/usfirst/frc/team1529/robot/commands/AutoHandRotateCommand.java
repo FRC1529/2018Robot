@@ -29,12 +29,7 @@ public class AutoHandRotateCommand extends Command {
     	//isFinished=false;
     	
     	Robot.kHandSubsystem.HandRotate.set(ControlMode.PercentOutput, speed, angle);
-if (false) 
-{
-    	if(Robot.kHandSubsystem.handEnc.getDistance() == angle){
-    		isFinished = true;
-    	}
-}
+
     }
 
     // Called repeatedly when this Command is scheduled to run

@@ -4,6 +4,7 @@ import org.usfirst.frc.team1529.robot.Robot;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class IntakeCommand extends Command {
 	private boolean isFinished;
+	private Timer ourTimer = new Timer();
 	private double speed;
 	private double time;
 	private int Auto_counter = 0;
@@ -24,6 +26,7 @@ public class IntakeCommand extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	ourTimer.start();
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -34,7 +37,7 @@ public class IntakeCommand extends Command {
     	Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, speed);
     	Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, -speed);
     	
-    	if(Auto_counter >= time){
+    	if(ourTimer.hasPeriodPassed(time)){
     		isFinished = true;
     	}
     }
@@ -46,6 +49,9 @@ public class IntakeCommand extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	Robot.kHandSubsystem.LeftIntake.set(ControlMode.PercentOutput, 0);
+    	Robot.kHandSubsystem.RightIntake.set(ControlMode.PercentOutput, 0);
+
     }
 
     // Called when another command which requires one or more of the same

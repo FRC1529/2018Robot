@@ -13,30 +13,25 @@ public class AutoMiddleCommandGroup extends CommandGroup {
 		switch (switchMode){
 			case "LEFT":
 				//Put left auto code here
-				addSequential(new AutoDriveCommand(.5, 40));
-				addSequential(new AutoTurnCommand(90, "left"));
-				addSequential(new AutoDriveCommand(.5, 120));
-				addSequential(new AutoTurnCommand(90, "right"));
-				addSequential(new AutoDriveCommand(.5, 94));
-				addSequential(new AutoTurnCommand(90, "right"));
-				addSequential(new AutoDriveCommand(.5, 48));
+				addSequential(new AutoDriveCommand(.5, 12));
+				addSequential(new AutoTurnCommand(-10,"left"));
+				addSequential(new AutoDriveCommand(.5, 56));
+				addSequential(new IntakeCommand(1,1));
 				break;
 			case "RIGHT":
 				//Put right auto code here
-				addSequential(new AutoDriveCommand(.5, 40));
-				addSequential(new AutoTurnCommand(90, "right"));
-				addSequential(new AutoDriveCommand(.5, 120));
-				addSequential(new AutoTurnCommand(90, "left"));
-				addSequential(new AutoDriveCommand(.5, 94));
-				addSequential(new AutoTurnCommand(90, "left"));
-				addSequential(new AutoDriveCommand(.5, 48));
+				addSequential(new AutoDriveCommand(.5, 12));
+				addSequential(new AutoTurnCommand(8,"right"));
+				addSequential(new AutoDriveCommand(.5, 56));
+				addSequential(new IntakeCommand(1,1));
 				break;
 			//add arm raise
 			default:
 				System.out.println("PARKER");
-				addSequential(new AutoDriveCommand(.5, 40));
-				addSequential(new ArmRaiseCommand(.5,12));
-				addSequential(new IntakeCommand(1,25));
+				addSequential(new AutoDriveCommand(.5, 12));
+				addSequential(new AutoTurnCommand(10,"right"));
+				addSequential(new AutoDriveCommand(.5, 56));
+				//addSequential(new IntakeCommand(1,1));
 				break;
     	}
 		addSequential(new AutoPneumaticsCommand(true));

@@ -2,6 +2,8 @@ package org.usfirst.frc.team1529.robot.commands;
 
 import org.usfirst.frc.team1529.robot.Robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
@@ -17,6 +19,7 @@ public class TeleopDriveCommand extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.kDriveTrainSubsystem.setAllMotorMode(NeutralMode.Coast);
     }
 
     // Called repeatedly when this Command is scheduled to run

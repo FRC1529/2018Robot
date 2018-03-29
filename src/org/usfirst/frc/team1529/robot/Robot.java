@@ -131,15 +131,15 @@ public class Robot extends TimedRobot {
 		
 		switch (startingPosition){
 			
-		case "LEFT":
-				autoCommand = new AutoLeftCommandGroup(switchMode);
-				break;
-		case "RIGHT":
-				autoCommand = new AutoRightCommandGroup(switchMode);
-				break;
-		case "MIDDLE":
-				autoCommand = new AutoMiddleCommandGroup(switchMode);
-				break;
+			case "LEFT":
+					autoCommand = new AutoLeftCommandGroup(switchMode);
+					break;
+			case "RIGHT":
+					autoCommand = new AutoRightCommandGroup(switchMode);
+					break;
+			case "MIDDLE":
+					autoCommand = new AutoMiddleCommandGroup(switchMode);
+					break;
 			default:
 				autoCommand = new AutoMiddleCommandGroup(switchMode);
 				break;
@@ -222,6 +222,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Rear Right Motor Voltage", kDriveTrainSubsystem.RearRight.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Rear Left Motor Voltage", kDriveTrainSubsystem.RearLeft.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Gyro", kDriveTrainSubsystem.gyro.getAngle());
+		
 		//SmartDashboard.putNumber("Climb Speed"	`1, kArmSubsystem.ElevatorMotor.getMotorOutputVoltage());
 		System.out.println("ENC: " + kDriveTrainSubsystem.enc.getDistance());
 		System.out.println(m_oi.Operator.getRawAxis(1));

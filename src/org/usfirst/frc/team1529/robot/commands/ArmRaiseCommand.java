@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.command.Command;
  *
  */
 public class ArmRaiseCommand extends Command {
-	
+		public static Timer raiseTimer = new Timer();
 		private double height;
 		private double speed;
 		private boolean isFinished;
@@ -20,6 +20,9 @@ public class ArmRaiseCommand extends Command {
     	requires(Robot.kDriveTrainSubsystem);
     	height = h;
     	speed = s;
+    	raiseTimer.start();
+    	
+    	Robot.kArmSubsystem.Raise(speed, height);
     }
 
     // Called just before this Command runs the first time
@@ -29,10 +32,11 @@ public class ArmRaiseCommand extends Command {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	
+    	if (raiseTimer.hasPeriodPassed(3)){
+    		isFinished = true;
+    	}
 
     	
-    	Robot.kArmSubsystem.Raise(speed, height);
     	System.out.println(Robot.kDriveTrainSubsystem.climbEnc.getDistance() );
     	if (Robot.kDriveTrainSubsystem.climbEnc.getDistance() >= height){
 			isFinished = true;
@@ -40,6 +44,7 @@ public class ArmRaiseCommand extends Command {
     }
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
+    	Robot.kArmSubsystem.Stop();
         return isFinished;
     }
 

@@ -11,80 +11,32 @@ public class AutoRightCommandGroup extends CommandGroup {
     public AutoRightCommandGroup(String switchMode) {
 		switch (switchMode){
 			case "LEFT":
-				addSequential(new AutoPneumaticsCommand(false));
-			
-				addSequential(new AutoHandRotateCommand(.25, 2));
-				
-				addSequential(new AutoDriveCommand(.5, 192));
-				
-				addSequential(new AutoTurnCommand(90, "right"));
-				
-				addSequential(new AutoDriveCommand(.5, 188));
-				
-				addSequential(new AutoTurnCommand(90, "left"));
-				
-				addSequential(new AutoDriveCommand(.5, 52));
-				
-				addParallel(new ArmRaiseCommand(.5,67));
-				
-				addSequential(new IntakeCommand(.7, 30));
-
-				addSequential(new AutoTurnCommand(180, "right"));
-				
-				addSequential(new AutoDriveCommand(.5, 52));	
-				
-				addSequential(new AutoTurnCommand(90, "right"));
-				
-				addSequential(new AutoDriveCommand(.5, 12));	
-				
-				addSequential(new AutoTurnCommand(90, "left"));
-				
-				addSequential(new AutoDriveCommand(.5, 16));	
-				
-				addParallel(new AutoPneumaticsCommand(false));
-				
-				addSequential(new AutoTurnCommand(70, "right"));	
-				
-				addSequential(new IntakeCommand(1, 25));
+				addSequential(new AutoDriveCommand(.5,185));
+				addSequential(new AutoTurnCommand(-70, "left"));
+				addSequential(new AutoDriveCommand(.5,150));
+				addSequential(new AutoTurnCommand(-70, "left"));
+				addSequential(new IntakeCommand(.5, 1));
+//				addSequential(new AutoDriveCommand(.5,96));
+//				addSequential(new AutoTurnCommand(90, "left"));
+//				addSequential(new AutoPneumaticsCommand(true));
+//				addSequential(new ArmRaiseCommand(.5,67));
+//				addSequential(new IntakeCommand(1, 25));
 				break;
-				
 			case "RIGHT":
-				addSequential(new AutoPneumaticsCommand(false));
-				
-				addSequential(new AutoHandRotateCommand(.25, 2));
-				
-				addSequential(new AutoDriveCommand(.5, 192));
-				
-				addSequential(new AutoTurnCommand(90, "right"));
-				
-				addSequential(new AutoDriveCommand(.5, 188));
-				
-				addSequential(new AutoTurnCommand(90, "left"));
-				
-				addSequential(new AutoDriveCommand(.5, 52));
-				
-				addParallel(new ArmRaiseCommand(.5,67));
-				
-				addSequential(new AutoPneumaticsCommand(true));
-				
-				addSequential(new AutoTurnCommand(180, "right"));
-				
-				addSequential(new AutoDriveCommand(.5, 52));	
-				
-				addSequential(new AutoTurnCommand(90, "right"));
-				
-				addSequential(new AutoDriveCommand(.5, 12));	
-				
-				addSequential(new AutoTurnCommand(90, "left"));
-				
-				addSequential(new AutoDriveCommand(.5, 16));	
-				
-				addParallel(new AutoPneumaticsCommand(false));
-				
-				addSequential(new IntakeCommand(.3, 25));
+				addSequential(new AutoDriveCommand(.5,136));
+				addSequential(new AutoTurnCommand(-60, "left"));
+//				addSequential(new AutoTurnCommand(90, "right"));
+//				addSequential(new AutoPneumaticsCommand(true));
+//				addSequential(new ArmRaiseCommand(.5,67));
+				addSequential(new IntakeCommand(.5, 1));
 				break;
 			default:
-				addSequential(new AutoDriveCommand(.5, 250));
+				addSequential(new AutoDriveCommand(.5,136));
+				addSequential(new AutoTurnCommand(-60, "left"));
+//				addSequential(new AutoTurnCommand(90, "right"));
+//				addSequential(new AutoPneumaticsCommand(true));
+//				addSequential(new ArmRaiseCommand(.5,67));
+				//addSequential(new IntakeCommand(.5, 1));
 				break;
 			
 		}

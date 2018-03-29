@@ -14,6 +14,7 @@ import org.usfirst.frc.team1529.robot.Robot;
 import org.usfirst.frc.team1529.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
@@ -43,6 +44,9 @@ public class AutoDriveCommand extends Command {
 	@Override
 	protected void initialize() {
 		Robot.kDriveTrainSubsystem.enc.reset();
+		Robot.kDriveTrainSubsystem.setAllMotorMode(NeutralMode.Brake);
+	
+		
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -68,6 +72,7 @@ public class AutoDriveCommand extends Command {
 	@Override
 	protected void end() {
 		Robot.kDriveTrainSubsystem.stop();
+		
 		Timer.delay(0.1);
 		Robot.kDriveTrainSubsystem.enc.reset();
 		

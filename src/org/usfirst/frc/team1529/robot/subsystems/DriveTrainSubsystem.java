@@ -9,6 +9,7 @@ package org.usfirst.frc.team1529.robot.subsystems;
 import org.usfirst.frc.team1529.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -100,9 +101,14 @@ public class DriveTrainSubsystem extends Subsystem {
 		RearLeft.set(ControlMode.PercentOutput, left * -SpeedModifier);
 		FrontRight.set(ControlMode.PercentOutput, right * SpeedModifier);
 		RearRight.set(ControlMode.PercentOutput, right * SpeedModifier);
-		System.out.println("Left motors");
-		System.out.println(FrontLeft.getMotorOutputPercent());
-		System.out.println(RearLeft.getMotorOutputPercent());
+	
 		
+	}
+	
+	public void setAllMotorMode(NeutralMode mode){
+		FrontLeft.setNeutralMode(mode);
+		RearLeft.setNeutralMode(mode);
+		FrontRight.setNeutralMode(mode);
+		RearRight.setNeutralMode(mode);
 	}
 }
