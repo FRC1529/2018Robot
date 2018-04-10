@@ -5,8 +5,7 @@ import org.usfirst.frc.team1529.robot.Robot;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.interfaces.Gyro; 
+import edu.wpi.first.wpilibj.command.Command; 
 /**
  *
  */
@@ -35,7 +34,7 @@ public class AutoTurnCommand extends Command {
     protected void execute() {
     	Robot.kDriveTrainSubsystem.gyro.getAngle();
     	
-    	if(direction == "right" ){
+    	if(direction.equals("right")){
     		Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput, speed);
     		Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, speed);
     		
@@ -45,7 +44,7 @@ public class AutoTurnCommand extends Command {
     			isFinished = true;
     		}
     	}
-    	else if (direction == "left" ){
+    	else if (direction.equals("left")){
     		Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput, -speed);
     		Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, -speed);
     		

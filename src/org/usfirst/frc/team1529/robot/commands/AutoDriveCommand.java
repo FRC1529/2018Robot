@@ -22,11 +22,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * An example command.  You can replace me with your own command.
  */
 public class AutoDriveCommand extends Command {
-
+	private Timer timer = new Timer();
 	private boolean isFinished;
 	private double speed;
 	private double distance;
 	private int auto_counter;
+	private double timeOut = -5;
 	
 	public AutoDriveCommand(double s, double d) {
 		// Use requires() here to declare subsystem dependencies
@@ -39,26 +40,45 @@ public class AutoDriveCommand extends Command {
 
 	}
 	
+	public AutoDriveCommand(double s, double d, double timeOut) {
+		// Use requires() here to declare subsystem dependencies
+		requires(Robot.kHandSubsystem);
+		requires(Robot.kDriveTrainSubsystem);
+		speed = s;
+		distance = d;
+		isFinished = false;
+		this.timeOut = timeOut;
+		requires(Robot.kArmSubsystem);
+
+	}
 
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
 		Robot.kDriveTrainSubsystem.enc.reset();
 		Robot.kDriveTrainSubsystem.setAllMotorMode(NeutralMode.Brake);
-	
+		timer.start();
 		
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	public void execute() {
-		//System.out.println("EXCUTING");
-		Robot.kDriveTrainSubsystem.autoDrive(speed, distance);
-			if(Robot.kDriveTrainSubsystem.enc.getDistance() > distance){
+		
+		
+			Robot.kDriveTrainSubsystem.FrontLeft.set(ControlMode.PercentOutput, speed);
+			Robot.kDriveTrainSubsystem.RearLeft.set(ControlMode.PercentOutput, speed	);
+			Robot.kDriveTrainSubsystem.FrontRight.set(ControlMode.PercentOutput, -(speed));
+			Robot.kDriveTrainSubsystem.RearRight.set(ControlMode.PercentOutput, -(speed));
+			if (this.timeOut > 0 && timer.hasPeriodPassed(this.timeOut)){
+				isFinished = true;
+			}
+				
+			if(Math.abs(Robot.kDriveTrainSubsystem.enc.getDistance()) > distance){
 				isFinished = true;
 			}
 
-		}
+	}
 		
 
 

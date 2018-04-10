@@ -7,6 +7,8 @@
 
 package org.usfirst.frc.team1529.robot;
 
+
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
@@ -26,6 +28,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 import org.usfirst.frc.team1529.robot.commands.AutoDefaultCommandGroup;
 import org.usfirst.frc.team1529.robot.commands.AutoDriveCommand;
+import org.usfirst.frc.team1529.robot.commands.AutoDriveForward;
 import org.usfirst.frc.team1529.robot.commands.AutoLeftCommandGroup;
 import org.usfirst.frc.team1529.robot.commands.AutoMiddleCommandGroup;
 import org.usfirst.frc.team1529.robot.commands.AutoRightCommandGroup;
@@ -42,7 +45,7 @@ import org.usfirst.frc.team1529.robot.commands.TeleopDriveCommand;
  */
 public class Robot extends TimedRobot {
 	public static OI m_oi;
-	
+
 	public static String switchMode = "UNKNOWN";
 	public static String scaleMode = "UNKNOWN";
 	public static String opposingSwitch = "UNKNOWN";
@@ -53,10 +56,11 @@ public class Robot extends TimedRobot {
 	public static ClimbSubsystem kClimbSubsystem = new ClimbSubsystem();
 	public static ArmSubsystem kArmSubsystem = new ArmSubsystem();
 	public static HandSubsystem kHandSubsystem = new HandSubsystem();
-	//CommandGroup autoDefaultCommand = new AutoDefaultCommandGroup("default");
+	CommandGroup autoDefaultCommand = new AutoDefaultCommandGroup("default");
 	//CommandGroup autoLeftCommand = new AutoLeftCommandGroup();
 	//CommandGroup autoMiddleCommand = new AutoMiddleCommandGroup();
 	//CommandGroup autoRightCommand = new AutoRightCommandGroup();
+	
 	
 	
 	
@@ -83,13 +87,14 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Auto mode chooser", m_chooser);
 		kDriveTrainSubsystem.gyro.calibrate();
 		Robot.kDriveTrainSubsystem.enc.reset();
+//		Robot.kDriveTrainSubsystem.initDefaultCommand();
 		System.out.println(m_chooser.getSelected());
 		
 		positionChooser.addDefault("Left", "LEFT");
 		positionChooser.addObject("Middle", "MIDDLE");
 		positionChooser.addObject("Right", "RIGHT");
 		SmartDashboard.putData("Starting Position", positionChooser);
-		
+		CameraServer.getInstance().startAutomaticCapture();
 //		Robot.kDriveTrainSubsystem.FrontLeft.setNeutralMode(NeutralMode.Coast);
 //		Robot.kDriveTrainSubsystem.RearLeft.setNeutralMode(NeutralMode.Coast);
 	}
@@ -123,17 +128,18 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 	
 		getGameData();
-		
+		kDriveTrainSubsystem.climbEnc.reset();
 		selectedAutoMode = (String) m_chooser.getSelected();
 		System.out.println(selectedAutoMode);
 		startingPosition = (String) positionChooser.getSelected();
 		System.out.println(startingPosition + " " + switchMode);
+		//autoCommand = new AutoDriveForward("HI");
 		
-		switch (startingPosition){
-			
+	switch (startingPosition){
+	
 			case "LEFT":
 					autoCommand = new AutoLeftCommandGroup(switchMode);
-					break;
+			break;
 			case "RIGHT":
 					autoCommand = new AutoRightCommandGroup(switchMode);
 					break;
@@ -141,9 +147,9 @@ public class Robot extends TimedRobot {
 					autoCommand = new AutoMiddleCommandGroup(switchMode);
 					break;
 			default:
-				autoCommand = new AutoMiddleCommandGroup(switchMode);
+				autoCommand = new AutoDriveForward("Hi Parker");
 				break;
-		}
+	}
 		
 		Robot.kDriveTrainSubsystem.enc.reset();
 		autoCommand.start();
@@ -193,6 +199,8 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
 		SmartDashboard.putNumber("Enc ", kDriveTrainSubsystem.enc.getDistance() );
+		SmartDashboard.putNumber("Climb Encoder", kDriveTrainSubsystem.climbEnc.getDistance());
+		SmartDashboard.putNumber("Gyro ", kDriveTrainSubsystem.gyro.getAngle());
 		//System.out.println("Enczymurgy: " + kDriveTrainSubsystem.enc.getDistance() + " & Gyro: " + kDriveTrainSubsystem.gyro.getAngle());
 	}
 
@@ -206,7 +214,8 @@ public class Robot extends TimedRobot {
 			autoCommand.cancel();
 		}
 		TeleOPDriveCommmand.start();
-		
+		 kDriveTrainSubsystem.climbEnc.reset();
+		 kDriveTrainSubsystem.enc.reset();
 	}
 
 	/**
@@ -222,10 +231,13 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Rear Right Motor Voltage", kDriveTrainSubsystem.RearRight.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Rear Left Motor Voltage", kDriveTrainSubsystem.RearLeft.getMotorOutputVoltage());
 		SmartDashboard.putNumber("Gyro", kDriveTrainSubsystem.gyro.getAngle());
+		//SmartDashboard.putNumber("Arm Encoder", kDr());
+		// Camera Server and Settings
 		
 		//SmartDashboard.putNumber("Climb Speed"	`1, kArmSubsystem.ElevatorMotor.getMotorOutputVoltage());
 		System.out.println("ENC: " + kDriveTrainSubsystem.enc.getDistance());
 		System.out.println(m_oi.Operator.getRawAxis(1));
+		System.out.println(Robot.kDriveTrainSubsystem.gyro.getAngle());
 		
 		
 		//drivetrain
