@@ -17,14 +17,13 @@ public class AutoLeftCommandGroup extends CommandGroup {
 		
 			case "LEFT":
 				System.out.println("LEFT COMMAND GROUP");
-				addSequential(new AutoHandRotateCommand(.25,.25));
-				addSequential(new ArmRaiseCommand(.5,4));
 				addSequential(new AutoDriveCommand(.5,136,5));
 				
-				
-				//addSequential(new AutoTurnCommand(90, "right"));
-				
-				addSequential(new IntakeCommand(.5, 1));
+				addSequential(new ArmRaiseCommand(1, 15, 2));
+			
+				addSequential(new AutoTurnCommand(70, "right"));
+								
+				addSequential(new AutoPneumaticsCommand(false));
 				
 				break;
 			case "RIGHT":
@@ -37,7 +36,7 @@ public class AutoLeftCommandGroup extends CommandGroup {
 				break;
 			
 			default:
-				addSequential(new AutoDriveCommand(.5,136));
+				//addSequential(new AutoDriveCommand(.5,136));
 //				addSequential(new AutoTurnCommand(60, "right"));
 //				addSequential(new ArmRaiseCommand(.5,2));
 				break;

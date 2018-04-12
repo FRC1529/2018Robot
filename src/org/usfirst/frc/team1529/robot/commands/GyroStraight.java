@@ -96,7 +96,6 @@ public class GyroStraight extends Command {
     	Robot.kDriveTrainSubsystem.RearRight.set(ControlMode.PercentOutput, 0);
     	
     	Robot.kDriveTrainSubsystem.gyro.reset();
-    	Robot.kDriveTrainSubsystem.enc.reset();
     }
 
     // Called when another command which requires one or more of the same

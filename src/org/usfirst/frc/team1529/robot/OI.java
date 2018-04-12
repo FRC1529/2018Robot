@@ -36,8 +36,8 @@ public class OI {
 	public Joystick rightStick = new Joystick(1);
 	public Joystick Operator = new Joystick(2);
 	// LIFT
-	public Button rJoystickDown = new JoystickButton(rightStick, 1);
-	public Button rJoystickUp = new JoystickButton(rightStick, 2);
+	public Button rJoystickDown = new JoystickButton(Operator, 1);
+	public Button rJoystickUp = new JoystickButton(Operator, 2);
 	// HAND ROTATE
 	public Button lJoystickDown = new JoystickButton(rightStick, 3);
 	public Button lJoystickUp = new JoystickButton(rightStick, 4);

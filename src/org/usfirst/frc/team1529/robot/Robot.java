@@ -8,33 +8,30 @@
 package org.usfirst.frc.team1529.robot;
 
 
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.CommandGroup;
-import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team1529.robot.subsystems.*;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import org.usfirst.frc.team1529.robot.commands.AutoDefaultCommandGroup;
-import org.usfirst.frc.team1529.robot.commands.AutoDriveCommand;
 import org.usfirst.frc.team1529.robot.commands.AutoDriveForward;
 import org.usfirst.frc.team1529.robot.commands.AutoLeftCommandGroup;
 import org.usfirst.frc.team1529.robot.commands.AutoMiddleCommandGroup;
 import org.usfirst.frc.team1529.robot.commands.AutoRightCommandGroup;
-import org.usfirst.frc.team1529.robot.commands.LowerClimbCommand;
-import org.usfirst.frc.team1529.robot.commands.RaiseClimbCommand;
+import org.usfirst.frc.team1529.robot.commands.AutoVaultLeftCommandGroup;
+import org.usfirst.frc.team1529.robot.commands.AutoVaultRightCommandGroup;
 import org.usfirst.frc.team1529.robot.commands.TeleopDriveCommand;
+import org.usfirst.frc.team1529.robot.subsystems.ArmSubsystem;
+import org.usfirst.frc.team1529.robot.subsystems.ClimbSubsystem;
+import org.usfirst.frc.team1529.robot.subsystems.DriveTrainSubsystem;
+import org.usfirst.frc.team1529.robot.subsystems.HandSubsystem;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -83,7 +80,7 @@ public class Robot extends TimedRobot {
 		m_oi.initializeButtons();
 		m_chooser.addDefault("Default Auto", "DEFAULT");
 		m_chooser.addObject("Left Scale", "LEFTSCALE");
-		m_chooser.addObject("Right Scale", "RIGHTSCALE");
+		m_chooser.addObject("Right Scale", "RIGHTSCALE");		
 		SmartDashboard.putData("Auto mode chooser", m_chooser);
 		kDriveTrainSubsystem.gyro.calibrate();
 		Robot.kDriveTrainSubsystem.enc.reset();
@@ -93,6 +90,8 @@ public class Robot extends TimedRobot {
 		positionChooser.addDefault("Left", "LEFT");
 		positionChooser.addObject("Middle", "MIDDLE");
 		positionChooser.addObject("Right", "RIGHT");
+		positionChooser.addObject("Vault Right", "VAULT RIGHT");
+		positionChooser.addObject("Vault Left", "VAULT LEFT");
 		SmartDashboard.putData("Starting Position", positionChooser);
 		CameraServer.getInstance().startAutomaticCapture();
 //		Robot.kDriveTrainSubsystem.FrontLeft.setNeutralMode(NeutralMode.Coast);
@@ -139,13 +138,20 @@ public class Robot extends TimedRobot {
 	
 			case "LEFT":
 					autoCommand = new AutoLeftCommandGroup(switchMode);
-			break;
+					//test
+					break;
 			case "RIGHT":
 					autoCommand = new AutoRightCommandGroup(switchMode);
 					break;
 			case "MIDDLE":
 					autoCommand = new AutoMiddleCommandGroup(switchMode);
 					break;
+			case "VAULT RIGHT":
+					autoCommand = new AutoVaultRightCommandGroup(); 
+					break;
+			case "VAULT LEFT":
+					autoCommand = new AutoVaultLeftCommandGroup(); 
+					break;		
 			default:
 				autoCommand = new AutoDriveForward("Hi Parker");
 				break;
@@ -388,18 +394,9 @@ public class Robot extends TimedRobot {
 							}
 								else{
 									
-									if(m_oi.lJoystickUp.get()){
-										Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 1);
-										Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, -1);
-									}
-										else if(m_oi.lJoystickDown.get()){
-											Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, -1);
-											Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 1);
-										}
-											else{
-												Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, 0);
-												Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, 0);
-											}
+									Robot.kArmSubsystem.ClimbMotor.set(ControlMode.PercentOutput, -m_oi.Operator.getRawAxis(1)*1.15);
+									Robot.kArmSubsystem.ElevatorMotor.set(ControlMode.PercentOutput, -m_oi.Operator.getRawAxis(1)*1.15);
+									
 								}
 							
 						}

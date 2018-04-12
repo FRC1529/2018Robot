@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class AutoDriveCommand extends Command {
+public class AutoReverseCommand extends Command {
 	private Timer timer = new Timer();
 	private boolean isFinished;
 	private double speed;
@@ -29,7 +29,7 @@ public class AutoDriveCommand extends Command {
 	private int auto_counter;
 	private double timeOut = -5;
 	
-	public AutoDriveCommand(double s, double d) {
+	public AutoReverseCommand(double s, double d) {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.kHandSubsystem);
 		requires(Robot.kDriveTrainSubsystem);
@@ -40,7 +40,7 @@ public class AutoDriveCommand extends Command {
 
 	}
 	
-	public AutoDriveCommand(double s, double d, double timeOut) {
+	public AutoReverseCommand(double s, double d, double timeOut) {
 		// Use requires() here to declare subsystem dependencies
 		requires(Robot.kHandSubsystem);
 		requires(Robot.kDriveTrainSubsystem);
@@ -74,7 +74,7 @@ public class AutoDriveCommand extends Command {
 				isFinished = true;
 			}
 				
-			if(Robot.kDriveTrainSubsystem.enc.getDistance() > distance){
+			if(Robot.kDriveTrainSubsystem.enc.getDistance() < distance){
 				isFinished = true;
 			}
 
